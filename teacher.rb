@@ -3,8 +3,20 @@ require_relative 'greetable'
 
 class Teacher < DbcPerson
 	include Greetable
+
+  class NoMethodError < StandardError
+  end
+
 	# attr_reader :age, :salary, :phase, :performance_rating, :target_raise
- #  	attr_accessor :name
+ #   	attr_accessor :name
+
+	# def initialize
+	# 	super
+	# 	@target_raise = self.class::TARGET_RAISE
+	# end
+
+ # I could set initialize here and set everything up like 
+ # @target_raise = self.class:Target_raise
 
   def set_phase(num)
     @phase = num
@@ -29,10 +41,12 @@ class Teacher < DbcPerson
   end
 
   def set_performance_rating(rating)
+  	raise NoMethodError, "User Teacher does not have performance rating available because Teacher has no rating" unless rating != ""
+
     response = ""
     if rating > self.class::SET_RATING
       response = "Yay, I'm a great employee!"
-      receive_raise(self.class::TARGET_RAISE)
+      receive_raise(@target_raise||self.class::TARGET_RAISE)
     else
       response += "Oh, well -- thanks to this actionable, specific, and kind "
       response += "feedback, I'll do better next time."
